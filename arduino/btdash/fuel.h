@@ -25,53 +25,36 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef _FUEL_h
+#define _FUEL_h
+
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
 #include "settings.h"
-#include "Instruments.h"
+#include "units.h"
 
-uint32_t duration;
-Settings settings;
-Instruments instruments;
+class Fuel
+{
+public:
+    byte remainPct : 8;
+    uint16_t remainVolume : 8;
+    uint16_t remainTime;
+    uint16_t remainDistance;
 
-//
-// write the current state of the instruments to the serial output.
-//
-void dash_update() {
-    if (SERIAL_BT.available() > 0) {
-        SERIAL_BT.print("rpm=");
-        SERIAL_BT.print(instruments.tach.rpm);
+    Fuel() {};
+    void init(Settings* pSettings);
+    void update();
 
-        SERIAL_BT.print(", fuel%=");
-        SERIAL_BT.print(instruments.fuel.remainPct);
-        SERIAL_BT.print(", fuelD=");
-        SERIAL_BT.print(instruments.fuel.remainDistance);
-        SERIAL_BT.print(", fuelT=");
-        SERIAL_BT.print(instruments.fuel.remainTime);
+private:
+    uint32_t updated;
 
-        SERIAL_BT.println();
-    }
-}
+    Settings* m_pSettings;
+};
 
-// the setup routine runs once when you power on or press reset
-void setup()  { 
-    // initialize the serial output
-    SERIAL_BT.begin(SERIAL_BPS);
-    pinMode(PIN_TACH, INPUT);
-    pinMode(PIN_FUEL, INPUT);
 
-    // establish contact
-    while (SERIAL_BT.available() <= 0)
-    {
-        SERIAL_BT.println(VERSION_STRING); // send an initial string
-        delay(500);
-    }
+#endif
 
-    instruments.init(&settings);
-} 
-
-// the loop routine runs over and over again forever
-void loop() {
-    instruments.update();
-    dash_update();
-    delay(500);
-}

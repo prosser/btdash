@@ -24,54 +24,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+#ifndef _TACH_h
+#define _TACH_h
 
 #include "settings.h"
-#include "Instruments.h"
 
-uint32_t duration;
-Settings settings;
-Instruments instruments;
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
-//
-// write the current state of the instruments to the serial output.
-//
-void dash_update() {
-    if (SERIAL_BT.available() > 0) {
-        SERIAL_BT.print("rpm=");
-        SERIAL_BT.print(instruments.tach.rpm);
+class Tachometer
+{
+public:
+    // word size is 16 bits, so max RPM is 32767. If your engine revs that high, you're driving an F1 from 2154!
+    uint16_t rpm;
 
-        SERIAL_BT.print(", fuel%=");
-        SERIAL_BT.print(instruments.fuel.remainPct);
-        SERIAL_BT.print(", fuelD=");
-        SERIAL_BT.print(instruments.fuel.remainDistance);
-        SERIAL_BT.print(", fuelT=");
-        SERIAL_BT.print(instruments.fuel.remainTime);
+    Tachometer(){};
+    void init(Settings* pSettings);
+    void update();
 
-        SERIAL_BT.println();
-    }
-}
+private:
+    uint32_t updated;
+    uint32_t microsPerRpm;
 
-// the setup routine runs once when you power on or press reset
-void setup()  { 
-    // initialize the serial output
-    SERIAL_BT.begin(SERIAL_BPS);
-    pinMode(PIN_TACH, INPUT);
-    pinMode(PIN_FUEL, INPUT);
+    Settings* m_pSettings;
+};
 
-    // establish contact
-    while (SERIAL_BT.available() <= 0)
-    {
-        SERIAL_BT.println(VERSION_STRING); // send an initial string
-        delay(500);
-    }
+#endif
 
-    instruments.init(&settings);
-} 
-
-// the loop routine runs over and over again forever
-void loop() {
-    instruments.update();
-    dash_update();
-    delay(500);
-}

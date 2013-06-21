@@ -25,53 +25,38 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef _UNITS_h
+#define _UNITS_h
 
-#include "settings.h"
-#include "Instruments.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
-uint32_t duration;
-Settings settings;
-Instruments instruments;
+#define KM_PER_MILE             1.60934f
+#define MILE_PER_KM             0.62137f
 
-//
-// write the current state of the instruments to the serial output.
-//
-void dash_update() {
-    if (SERIAL_BT.available() > 0) {
-        SERIAL_BT.print("rpm=");
-        SERIAL_BT.print(instruments.tach.rpm);
+#define L_PER_GAL_US            0.26417f
+#define L_PER_GAL_IMPERIAL      0.21997f
+#define GAL_US_PER_L            3.78541f
+#define GAL_IMPERIAL_PER_L      4.54609f
+#define GAL_US_PER_GAL_IMPERIAL 1.20095f
+#define GAL_IMPERIAL_PER_GAL_US 0.832674f
 
-        SERIAL_BT.print(", fuel%=");
-        SERIAL_BT.print(instruments.fuel.remainPct);
-        SERIAL_BT.print(", fuelD=");
-        SERIAL_BT.print(instruments.fuel.remainDistance);
-        SERIAL_BT.print(", fuelT=");
-        SERIAL_BT.print(instruments.fuel.remainTime);
+#define PSI_PER_BAR             0.06895f
+#define BAR_PER_PSI             14.5038f
 
-        SERIAL_BT.println();
-    }
-}
+#define MILLIS_PER_SECOND       1000
+#define MICROS_PER_SECOND       1000000
 
-// the setup routine runs once when you power on or press reset
-void setup()  { 
-    // initialize the serial output
-    SERIAL_BT.begin(SERIAL_BPS);
-    pinMode(PIN_TACH, INPUT);
-    pinMode(PIN_FUEL, INPUT);
+// Measurement system (U.S., Imperial, Metric)
+typedef enum Units
+{
+    UNITS_METRIC,
+    UNITS_IMPERIAL,
+    UNITS_US,
+} Units;
 
-    // establish contact
-    while (SERIAL_BT.available() <= 0)
-    {
-        SERIAL_BT.println(VERSION_STRING); // send an initial string
-        delay(500);
-    }
+#endif
 
-    instruments.init(&settings);
-} 
-
-// the loop routine runs over and over again forever
-void loop() {
-    instruments.update();
-    dash_update();
-    delay(500);
-}

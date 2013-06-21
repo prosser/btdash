@@ -25,53 +25,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef _SPEEDO_h
+#define _SPEEDO_h
 
 #include "settings.h"
-#include "Instruments.h"
 
-uint32_t duration;
-Settings settings;
-Instruments instruments;
+class Speedometer
+{
+public:
+    uint16_t speed;
 
-//
-// write the current state of the instruments to the serial output.
-//
-void dash_update() {
-    if (SERIAL_BT.available() > 0) {
-        SERIAL_BT.print("rpm=");
-        SERIAL_BT.print(instruments.tach.rpm);
+    Speedometer() {};
+    void init(Settings* pSettings);
+    void update();
 
-        SERIAL_BT.print(", fuel%=");
-        SERIAL_BT.print(instruments.fuel.remainPct);
-        SERIAL_BT.print(", fuelD=");
-        SERIAL_BT.print(instruments.fuel.remainDistance);
-        SERIAL_BT.print(", fuelT=");
-        SERIAL_BT.print(instruments.fuel.remainTime);
+private:
+    Settings* m_pSettings;
+};
 
-        SERIAL_BT.println();
-    }
-}
+#endif
 
-// the setup routine runs once when you power on or press reset
-void setup()  { 
-    // initialize the serial output
-    SERIAL_BT.begin(SERIAL_BPS);
-    pinMode(PIN_TACH, INPUT);
-    pinMode(PIN_FUEL, INPUT);
-
-    // establish contact
-    while (SERIAL_BT.available() <= 0)
-    {
-        SERIAL_BT.println(VERSION_STRING); // send an initial string
-        delay(500);
-    }
-
-    instruments.init(&settings);
-} 
-
-// the loop routine runs over and over again forever
-void loop() {
-    instruments.update();
-    dash_update();
-    delay(500);
-}
