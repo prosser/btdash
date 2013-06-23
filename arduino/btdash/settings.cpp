@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "settings.h"
 #include <avr/eeprom.h>
 
-int Settings::get_buffer_index(int *pValue)
+int Settings::getBufferIndex(int *pValue)
 {
     int i;
     int last;
@@ -58,17 +58,17 @@ int Settings::get_buffer_index(int *pValue)
 }
 
 // rotates the EEPROM data buffer to the next buffer slot to reduce EEPROM wear
-void Settings::rotate_buffer()
+void Settings::rotateBuffer()
 {
     int value;
-    int index = (get_buffer_index(&value) + 1) % EE_NUM_BUFFERS;
+    int index = (getBufferIndex(&value) + 1) % EE_NUM_BUFFERS;
     EE_WRITE(EE_STATUS_BUFFER + index, value + 1);
 }
 
 // gets the address to the current EEPROM data buffer
-int Settings::get_data_buffer()
+int Settings::getDataBuffer()
 {
-    int index = get_buffer_index(NULL);
+    int index = getBufferIndex(NULL);
     return EE_DATA_BUFFERS + sizeof(EE_Data) * index;
 }
 
@@ -80,7 +80,7 @@ void Settings::load()
     int i;
     int address;
 
-    for (i = 0, address = get_data_buffer(); i < sizeof(data); ++i, ++address, ++pData)
+    for (i = 0, address = getDataBuffer(); i < sizeof(data); ++i, ++address, ++pData)
     {
         *pData = EE_READ(address);
     }
@@ -109,8 +109,8 @@ void Settings::save()
     int written = 0;
 
     // rotate the data buffer, then get the new address
-    rotate_buffer();
-    address = get_data_buffer();
+    rotateBuffer();
+    address = getDataBuffer();
 
     // pack settings and userdata into EE_Data
     data.distanceTraveled = this->distanceTraveled;

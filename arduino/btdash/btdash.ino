@@ -36,33 +36,18 @@ Instruments instruments;
 //
 // write the current state of the instruments to the serial output.
 //
-void dash_update() {
-    if (SERIAL_BT.available() > 0) {
-        SERIAL_BT.print("rpm=");
-        SERIAL_BT.print(instruments.tach.rpm);
-
-        SERIAL_BT.print(", fuel%=");
-        SERIAL_BT.print(instruments.fuel.remainPct);
-        SERIAL_BT.print(", fuelD=");
-        SERIAL_BT.print(instruments.fuel.remainDistance);
-        SERIAL_BT.print(", fuelT=");
-        SERIAL_BT.print(instruments.fuel.remainTime);
-
-        SERIAL_BT.println();
-    }
-}
 
 // the setup routine runs once when you power on or press reset
 void setup()  { 
     // initialize the serial output
-    SERIAL_BT.begin(SERIAL_BPS);
+    SERIAL_BT.begin(SERIAL_BPS, SERIAL_8N1);
     pinMode(PIN_TACH, INPUT);
     pinMode(PIN_FUEL, INPUT);
 
     // establish contact
     while (SERIAL_BT.available() <= 0)
     {
-        SERIAL_BT.println(VERSION_STRING); // send an initial string
+        SERIAL_BT.println(VERSION_STRING " waiting for connect"); // send an initial string
         delay(500);
     }
 
@@ -71,7 +56,5 @@ void setup()  {
 
 // the loop routine runs over and over again forever
 void loop() {
-    instruments.update();
-    dash_update();
-    delay(500);
+    instruments.measure();
 }

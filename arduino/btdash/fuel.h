@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "settings.h"
 #include "units.h"
+#include "MultiMeter.h"
 
 class Fuel
 {
@@ -46,12 +47,13 @@ public:
     uint16_t remainDistance;
 
     Fuel() {};
-    void init(Settings* pSettings);
-    void update();
+    void init(Settings* pSettings, MultiMeter* pMeter);
+    void measure();
+    void report();
 
 private:
-    uint32_t updated;
-
+    uint32_t m_lastMeasured;
+    MultiMeter* m_pMeter;
     Settings* m_pSettings;
 };
 

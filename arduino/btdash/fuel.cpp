@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Arduino.h"
 #include "fuel.h"
 
-void Fuel::init(Settings* pSettings)
+void Fuel::init(Settings* pSettings, MultiMeter* pMeter)
 {
     remainDistance = 0;
     remainTime = 0;
@@ -36,6 +36,7 @@ void Fuel::init(Settings* pSettings)
     remainVolume = 0;
 
     m_pSettings = pSettings;
+    m_pMeter = pMeter;
 
     if (pSettings->fuelOhmScale == 255)
     {
@@ -55,23 +56,26 @@ void Fuel::init(Settings* pSettings)
         pSettings->fuel.litersSegments[3] = 30;
         pSettings->fuel.litersSegments[4] = 40;
     }
+
+    // prep for reading by pulling up the internal 10k resistor
+    // on arduinos, you do this with a digitalWrite(HIGH) call on an analog IN pin
+    digitalWrite(PIN_FUEL, HIGH);
 }
 
-// Updates the fuel gauge values by reading ECU signals
-void Fuel::update()
+// measures the fuel gauge values by reading ECU signals
+void Fuel::measure()
 {
     uint32_t ms = micros();
-    if (ms > updated + FUEL_UPDATE_EVERY_MS)
+    if (ms > m_lastMeasured + FUEL_UPDATE_EVERY_MS)
     {
-        updated = ms;
+        m_lastMeasured = ms;
         FuelData* pFuelData = &m_pSettings->fuel;
         uint8_t* pLiterSegments = pFuelData->litersSegments;
         uint8_t* pOhmSegments = pFuelData->ohmSegments;
 
         ++pFuelData->nSamples;
 
-        int val = analogRead(PIN_FUEL);
-        int ohms = val / m_pSettings->fuelOhmScale;
+        uint8_t ohms = (uint8_t)(m_pMeter->measureOhms(PIN_FUEL) / m_pSettings->fuelOhmScale);
 
         uint16_t lo = 0;
         uint16_t hi = 0;
@@ -109,5 +113,25 @@ void Fuel::update()
 
         remainVolume = dl;
         remainPct = dl * 10 / pLiterSegments[FUEL_NUM_SEGMENTS - 1];
+    }
+}
+
+void Fuel::report()
+{
+    if (m_pSettings->debugMode)
+    {
+        SERIAL_BT.print(" fuelRaw=");
+        SERIAL_BT.print(analogRead(PIN_FUEL));
+
+        SERIAL_BT.print(" fuel%=");
+        SERIAL_BT.print(remainPct);
+
+        SERIAL_BT.print(" fuelV=");
+        SERIAL_BT.print(remainVolume);
+
+        //SERIAL_BT.print(", fuelD=");
+        //SERIAL_BT.print(remainDistance);
+        //SERIAL_BT.print(", fuelT=");
+        //SERIAL_BT.print(remainTime);
     }
 }

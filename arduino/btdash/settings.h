@@ -100,6 +100,8 @@ class Settings
 public:
     Settings()
     {
+        // for now, debugMode = true always. for now.
+        debugMode = true;
     };
 
     void load();
@@ -111,14 +113,15 @@ public:
     Units volumeUnits;
     uint8_t tachDutyCycle;
     uint8_t fuelOhmScale;
+    bool debugMode;
 
     uint32_t distanceTraveled;
 
     FuelData fuel;
 private:
-    static int get_buffer_index(int *pValue);
-    static void rotate_buffer();
-    static int get_data_buffer();
+    static int getBufferIndex(int *pValue);
+    static void rotateBuffer();
+    static int getDataBuffer();
 };
 
 

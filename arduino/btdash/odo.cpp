@@ -33,7 +33,12 @@ void Odometer::init(Settings* pSettings)
     distance = pSettings->distanceTraveled;
 }
 
-void Odometer::update()
+void Odometer::measure()
 {
     distance = m_pSettings->distanceTraveled;
+}
+
+void Odometer::report()
+{
+    // nyi
 }

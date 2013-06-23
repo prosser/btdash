@@ -44,7 +44,8 @@ public:
 
     Odometer(){}
     void init(Settings* pSettings);
-    void update();
+    void measure();
+    void report();
 
 private:
     Settings* m_pSettings;

@@ -33,7 +33,12 @@ void Speedometer::init(Settings* pSettings)
     m_pSettings = pSettings;
 }
 
-void Speedometer::update()
+void Speedometer::measure()
+{
+    // nyi
+}
+
+void Speedometer::report()
 {
     // nyi
 }

@@ -32,28 +32,36 @@ void Tachometer::init(Settings* pSettings)
 {
     m_pSettings = pSettings;
 
-    updated = micros();
+    m_lastMeasured = micros();
     rpm = 0;
 
-    microsPerRpm = 100 * MICROS_PER_SECOND / (pSettings->tachDutyCycle * 3);
+    m_microsPerRpm = 100 * MICROS_PER_SECOND / (pSettings->tachDutyCycle * 3);
 }
 
 //
 // read the tachometer feed from the car's ECU and updates a Tachometer struct
 //
-void Tachometer::update()
+void Tachometer::measure()
 {
     if (digitalRead(PIN_TACH) == LOW) {
-        if (updated != 0) {
-            rpm = microsPerRpm / (micros() - updated);
+        if (m_lastMeasured != 0) {
+            rpm = m_microsPerRpm / (micros() - m_lastMeasured);
 
-            // reset the update timestamp
-            updated = 0;
+            // reset the measure timestamp
+            m_lastMeasured = 0;
         }
     }
-    else if (updated == 0) {
+    else if (m_lastMeasured == 0) {
         // transitioning from low to high.
-        updated = micros();
+        m_lastMeasured = micros();
     }
 }
 
+void Tachometer::report()
+{
+    if (m_pSettings->debugMode)
+    {
+        SERIAL_BT.print(" rpm=");
+        SERIAL_BT.print(rpm);
+    }
+}

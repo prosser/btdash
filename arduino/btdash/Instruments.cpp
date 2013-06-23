@@ -32,12 +32,39 @@ void Instruments::init(Settings* pSettings)
 {
     tach.init(pSettings);
     odo.init(pSettings);
-    fuel.init(pSettings);
+    fuel.init(pSettings, &m_meter);
 }
 
-void Instruments::update()
+void Instruments::measure()
 {
-    tach.update();
-    odo.update();
-    fuel.update();
+    tach.measure();
+    odo.measure();
+    fuel.measure();
+    speedo.measure();
+}
+
+void Instruments::report()
+{
+    if (SERIAL_BT.available() > 0)
+    {
+        unsigned long now = millis();
+        if (now - m_lastReported >= 500)
+        {
+            m_lastReported = now;
+
+            tach.report();
+            odo.report();
+            fuel.report();
+            speedo.report();
+
+            SERIAL_BT.clearWriteError();
+            SERIAL_BT.flush();
+
+            SERIAL_BT.write("Instruments");
+            SERIAL_BT.write(sizeof(Instruments));
+            SERIAL_BT.write((uint8_t*)this, sizeof(Instruments));
+
+            SERIAL_BT.flush();
+        }
+    }
 }

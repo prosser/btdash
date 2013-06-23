@@ -43,11 +43,12 @@ public:
 
     Tachometer(){};
     void init(Settings* pSettings);
-    void update();
+    void measure();
+    void report();
 
 private:
-    uint32_t updated;
-    uint32_t microsPerRpm;
+    uint32_t m_lastMeasured;
+    uint32_t m_microsPerRpm;
 
     Settings* m_pSettings;
 };

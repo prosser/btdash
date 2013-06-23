@@ -38,7 +38,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Instruments
 {
 public:
-    Instruments() { };
+    Instruments()
+    {
+        m_lastReported = 0;
+    };
 
     Tachometer tach;
     Speedometer speedo;
@@ -46,10 +49,13 @@ public:
     Fuel fuel;
 
     void init(Settings* pSettings);
-    void update();
+    void measure();
+    void report();
 
 private:
+    unsigned long m_lastReported;
     Settings* m_pSettings;
+    MultiMeter m_meter;
 };
 
 #endif
