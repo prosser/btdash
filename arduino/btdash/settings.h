@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // input mapping
 static const uint8_t PIN_TACH = 52;
-static const uint8_t PIN_FUEL = (uint8_t)'6';
+static const uint8_t PIN_FUEL = A0;
 
 // By default, communicate at this bitrate. The listener client must match this value.
 static const uint32_t SERIAL_BPS = 115200;

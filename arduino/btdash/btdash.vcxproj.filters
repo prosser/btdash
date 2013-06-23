@@ -30,9 +30,6 @@
     <ClInclude Include="units.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Instruments.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -44,22 +41,22 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="odo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tach.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fuel.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Instruments.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="speedo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fuel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Instruments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="odo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="speedo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tach.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

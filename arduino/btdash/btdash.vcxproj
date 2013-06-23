@@ -69,7 +69,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="settings.h" />
-    <ClInclude Include="config.h" />
     <ClInclude Include="Instruments.h" />
     <ClInclude Include="speedo.h" />
     <ClInclude Include="units.h" />
@@ -80,11 +79,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="settings.cpp" />
-    <ClCompile Include="fuel.c" />
-    <ClCompile Include="Instruments.c" />
-    <ClCompile Include="odo.c" />
-    <ClCompile Include="speedo.c" />
-    <ClCompile Include="tach.c" />
+    <ClCompile Include="fuel.cpp" />
+    <ClCompile Include="Instruments.cpp" />
+    <ClCompile Include="odo.cpp" />
+    <ClCompile Include="speedo.cpp" />
+    <ClCompile Include="tach.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="btdash.ino">
