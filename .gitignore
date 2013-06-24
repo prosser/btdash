@@ -4,3 +4,5 @@
 .*
 *.vmps.xml
 !.gitignore
+build/*
+egret/Egret/build/*
