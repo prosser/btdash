@@ -33,6 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // input mapping
 static const uint8_t PIN_TACH = 52;
+
+#define PIN_TACH_SIM 50
+
 static const uint8_t PIN_FUEL = A0;
 
 // By default, communicate at this bitrate. The listener client must match this value.
@@ -47,13 +50,21 @@ static const uint32_t SERIAL_BPS = 115200;
 #define FUEL_NUM_SEGMENTS      5
 #define FUEL_MAX_SAMPLES_SAVED 20
 
+#define TACH_MAX_RPM           9000
+
+typedef enum MODES
+{
+    MODE_SIGNAL_PROCESSING = 0,
+    MODE_SIGNAL_GENERATION = 1,
+} MODES;
+
 static const uint8_t FUEL_UPDATE_EVERY_MS = 250; // number of ms between fuel updates
 
 // EEPROM addresses
 #if (defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__))
-#define EE_SIZE = 4096;
+#define EE_SIZE 4096
 #else
-#define EE_SIZE = 512;
+#define EE_SIZE 512
 #endif
 
 #define EE_STATUS_BUFFER    0
@@ -102,10 +113,14 @@ public:
     {
         // for now, debugMode = true always. for now.
         debugMode = true;
+        mode = MODE_SIGNAL_PROCESSING;
+
+        size_t i;
     };
 
     void load();
     void save();
+    void update();
 
     Units distanceUnits;
     Units pressureUnits;
@@ -114,6 +129,7 @@ public:
     uint8_t tachDutyCycle;
     uint8_t fuelOhmScale;
     bool debugMode;
+    uint8_t mode;
 
     uint32_t distanceTraveled;
 

@@ -71,6 +71,7 @@
     <ClInclude Include="MultiMeter.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="Instruments.h" />
+    <ClInclude Include="SimTach.h" />
     <ClInclude Include="speedo.h" />
     <ClInclude Include="units.h" />
     <ClInclude Include="fuel.h" />
@@ -83,6 +84,7 @@
     <ClCompile Include="fuel.cpp" />
     <ClCompile Include="Instruments.cpp" />
     <ClCompile Include="odo.cpp" />
+    <ClCompile Include="SimTach.cpp" />
     <ClCompile Include="speedo.cpp" />
     <ClCompile Include="tach.cpp" />
   </ItemGroup>

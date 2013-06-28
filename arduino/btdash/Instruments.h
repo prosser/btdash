@@ -48,14 +48,13 @@ public:
     Odometer odo;
     Fuel fuel;
 
-    void init(Settings* pSettings);
+    void init(Settings* pSettings, MultiMeter* pMeter);
     void measure();
     void report();
 
 private:
     unsigned long m_lastReported;
     Settings* m_pSettings;
-    MultiMeter m_meter;
 };
 
 #endif

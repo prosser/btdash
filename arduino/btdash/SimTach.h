@@ -25,41 +25,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef __SIMTACH_h
+#define __SIMTACH_h
+
 #include "Arduino.h"
-#include "Instruments.h"
+#include "settings.h"
+#include "tach.h"
 
-void Instruments::init(Settings* pSettings, MultiMeter* pMeter)
+class SimTach
 {
-    tach.init(pSettings);
-    odo.init(pSettings);
-    fuel.init(pSettings, pMeter);
-}
+public:
+    SimTach(int pin);
+    ~SimTach(void);
 
-void Instruments::measure()
-{
-    tach.measure();
-    odo.measure();
-    fuel.measure();
-    speedo.measure();
-}
+    void init(Settings* pSettings);
+    void simulate(Tachometer *pTach);
 
-void Instruments::report()
-{
-    tach.report();
-    odo.report();
-    fuel.report();
-    speedo.report();
+    unsigned long microsPerRpm;
+private:
+    /*void setFrequency(unsigned long freq, unsigned long dutyCycle);*/
+    int m_pin;
+    uint16_t m_lastRpm;
+    unsigned long m_lastMicrosPerRpm;
+    Settings* m_pSettings;
 
-    SERIAL_BT.clearWriteError();
+    unsigned long m_lastTestMillis;
+    int m_testIndex;
+    static uint16_t m_rpmTest[20];
+};
 
-    if (m_pSettings->debugMode)
-    {
-        SERIAL_BT.println("[Instruments structure]");
-    }
-    else
-    {
-        SERIAL_BT.write(sizeof(Instruments));
-        SERIAL_BT.write((uint8_t*)this, sizeof(Instruments));
-    }
-    SERIAL_BT.flush();
-}
+#endif

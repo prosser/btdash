@@ -46,9 +46,10 @@ public:
     void measure();
     void report();
 
+    uint32_t microsPerRpm;
+
 private:
     uint32_t m_lastMeasured;
-    uint32_t m_microsPerRpm;
 
     Settings* m_pSettings;
 };

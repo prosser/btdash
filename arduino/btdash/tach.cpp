@@ -35,7 +35,8 @@ void Tachometer::init(Settings* pSettings)
     m_lastMeasured = micros();
     rpm = 0;
 
-    m_microsPerRpm = 100 * MICROS_PER_SECOND / (pSettings->tachDutyCycle * 3);
+    // this is what it looks like for my 4-cylinder car. YMMV.
+    microsPerRpm = MICROS_PER_SECOND * 7 / (pSettings->tachDutyCycle * 3) / 90;
 }
 
 //
@@ -45,7 +46,7 @@ void Tachometer::measure()
 {
     if (digitalRead(PIN_TACH) == LOW) {
         if (m_lastMeasured != 0) {
-            rpm = m_microsPerRpm / (micros() - m_lastMeasured);
+            rpm = microsPerRpm / (micros() - m_lastMeasured);
 
             // reset the measure timestamp
             m_lastMeasured = 0;
